@@ -1,6 +1,6 @@
-from reader.utils import get_encoder
-from reader.config import MAX_TOKENS, OVERLAP_TOKENS
-from reader.codechunk import CodeChunk
+from .utils import get_encoder
+from .config import MAX_TOKENS, OVERLAP_TOKENS
+from .codechunk import CodeChunk
 
 encoder = get_encoder() # default model -> gpt-3.5-turbo
 
@@ -14,7 +14,7 @@ class chunker():
     def count_tokens(self, text):
         return len(self.enc.encode(text))
     
-    # TODO: start line, end line bug not fixed.
+    # TODO: start line, end line bug not fixed. [i fixed it, i guess]
     def lineChunker(self,
                     content,
                     file_path,
@@ -34,10 +34,10 @@ class chunker():
             line_tokens = token_count[i]
             # print(line_tokens, current_tokens)
 
-            start_line = i - len(current_chunks)
-            end_line = len(current_chunks)-1;
             if line_tokens > max_tokens:
                 
+                start_line = i+1
+                end_line = start_line + len(current_chunks)-1;
                 if current_chunks:
                     # create the structured data of the current chunks data
                     chunk_content = "\n".join(current_chunks)
@@ -74,6 +74,9 @@ class chunker():
                 continue
 
             if current_tokens + line_tokens > max_tokens:
+                start_line = i+1 - len(current_chunks)
+                end_line = i
+
                 # create the structured data of the current chunks data
                 chunk_content = "\n".join(current_chunks)
                 data = CodeChunk.from_raw_data(
@@ -97,8 +100,8 @@ class chunker():
                 current_tokens+=line_tokens
                 i+=1
         if current_chunks:
-            start_line = len(lines) - len(current_chunks)
-            end_line = len(lines)-1 
+            start_line = i+1 - len(current_chunks)
+            end_line = i 
             # create the structured data of the current chunks data
             chunk_content = "\n".join(current_chunks)
             data = CodeChunk.from_raw_data(

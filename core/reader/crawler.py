@@ -1,6 +1,6 @@
 import os
-from config import EXCLUDED_DIRS, EXCLUDED_EXTS, BASE_DIR
-from state import VALID_FILES_CONTAINER
+from ..config import EXCLUDED_DIRS, EXCLUDED_EXTS, BASE_DIR
+from ..state import VALID_FILES_CONTAINER
 
 def crawl_for_valid_files(base_dir):
     """

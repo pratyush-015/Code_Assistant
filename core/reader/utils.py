@@ -20,7 +20,7 @@ def serialize_data(chunker_instance):
     "chunk_type": data.chunk_type,
     "metadata": data.metadata} for data in chunker_instance.GlobalChunks]
 
-    return serialize_data
+    return serialized_data
 
 def write_file(file_path, content):
     with open("data.json", "w") as f:
